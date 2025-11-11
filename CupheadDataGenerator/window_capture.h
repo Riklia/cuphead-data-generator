@@ -3,8 +3,10 @@
 #include <windows.h>
 #include <opencv2/opencv.hpp>
 
+#include "frame_capture_worker.h"
+
 // Provides data (capture) from the given window by window handle. 
-class WindowCapture {
+class WindowCapture : public FrameSource {
 public:
     explicit WindowCapture(const HWND window_handle) : window_handle_(window_handle) {}
     const HWND& GetWindowHandle() const { return window_handle_; }
@@ -23,7 +25,7 @@ public:
         RestoreWindow();
     }
     // Captures and returns the window context.
-    cv::Mat Capture() const;
+    cv::Mat Capture() const override;
 
 private:
     HWND window_handle_;

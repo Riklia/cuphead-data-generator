@@ -6,10 +6,31 @@
 #include <string>
 #include <vector>
 
-enum class EntityType : int {
-    player = 0,
-    boss = 1
+enum class EntityType {
+	player = 0,
+	boss = 1,
+	projectile = 2,
+	parryable = 3,
+
+	invalid = -1
 };
+
+inline const char* ToString(EntityType entity_type) {
+    switch (entity_type) {
+    case EntityType::player:
+        return "PLAYER";
+    case EntityType::boss:
+        return "BOSS";
+    case EntityType::projectile:
+        return "PROJECTILE";
+    case EntityType::parryable:
+        return "PARRYABLE";
+    case EntityType::invalid:
+        return "INVALID";
+    }
+    return "UNKNOWN";
+}
+
 
 struct EntityDetection {
     cv::Rect box;
@@ -19,7 +40,7 @@ struct EntityDetection {
 
 class CupheadEntityDetector {
 public:
-    explicit CupheadEntityDetector(const std::wstring& onnx_path, int input_size = 640);
+    explicit CupheadEntityDetector(const std::wstring& onnx_path, int input_size);
 
     // Runs detection on a BGR frame. Returns vector of detected entities.
     std::vector<EntityDetection> DetectEntities(const cv::Mat& bgr_frame,

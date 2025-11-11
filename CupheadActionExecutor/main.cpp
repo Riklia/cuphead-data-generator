@@ -18,7 +18,8 @@
 //        zmq::message_t request;
 //
 //        if (socket.recv(request, zmq::recv_flags::none)) {
-//            if (request.size() != sizeof(int)) {
+//            if (request.size() != sizeof
+// ) {
 //                std::cerr << "Invalid action size: " << request.size() << "\n";
 //                continue;
 //            }

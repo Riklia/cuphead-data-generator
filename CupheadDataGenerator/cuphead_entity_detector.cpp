@@ -13,14 +13,14 @@ float Clampf(float v, float lo, float hi) {
 cv::Mat ExtractLetterbox(const cv::Mat& img, int new_shape, const cv::Scalar& color,
     bool scaleup, float& gain, int& padw, int& padh) {
 
-    const int W = img.cols;
-    const int H = img.rows;
+    const int width = img.cols;
+    const int height = img.rows;
 
-    float r = std::min(static_cast<float>(new_shape) / W, static_cast<float>(new_shape) / H);
+    float r = std::min(static_cast<float>(new_shape) / width, static_cast<float>(new_shape) / height);
     if (!scaleup) r = std::min(r, 1.0f);
 
-    const int nw = static_cast<int>(std::round(W * r));
-    const int nh = static_cast<int>(std::round(H * r));
+    const int nw = static_cast<int>(std::round(width * r));
+    const int nh = static_cast<int>(std::round(height * r));
 
     padw = (new_shape - nw) / 2;
     padh = (new_shape - nh) / 2;
@@ -98,22 +98,35 @@ bool XywhToRectUnletterbox(float cx, float cy, float w, float h,
     return box_out.width > 0 && box_out.height > 0;
 }
 
+EntityType IdToEntityType(int id) {
+    switch (id) {
+    case 0:
+        return EntityType::player;
+    case 1:
+        return EntityType::boss;
+    case 2:
+        return EntityType::projectile;
+    case 3:
+        return EntityType::parryable;
+    default:
+        return EntityType::invalid;
+    }
+}
+
 }  // namespace
 
 
-CupheadEntityDetector::CupheadEntityDetector(const std::wstring& onnx_path, int input_size)
-    : env_(ORT_LOGGING_LEVEL_WARNING, "cuphead-detector"),
-    allocator_(std::make_unique<Ort::AllocatorWithDefaultOptions>()),
-    input_size_(input_size) {
+CupheadEntityDetector::CupheadEntityDetector(const std::wstring& onnx_path, int input_size): env_(ORT_LOGGING_LEVEL_WARNING, "cuphead-detector"),
+	allocator_(std::make_unique<Ort::AllocatorWithDefaultOptions>()),
+	input_size_(input_size) {
 
-    session_opts_.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
-    session_ = Ort::Session(env_, onnx_path.c_str(), session_opts_);
-    meminfo_ = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+	session_opts_.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+	session_ = Ort::Session(env_, onnx_path.c_str(), session_opts_);
+	meminfo_ = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
-    input_name_ = session_.GetInputNameAllocated(0, *allocator_).get();
-    output_name_ = session_.GetOutputNameAllocated(0, *allocator_).get();
+	input_name_ = session_.GetInputNameAllocated(0, *allocator_).get();
+	output_name_ = session_.GetOutputNameAllocated(0, *allocator_).get();
 }
-
 
 std::vector<EntityDetection> CupheadEntityDetector::DetectEntities(
     const cv::Mat& bgr_frame, float conf_threshold, float iou_threshold) {
@@ -169,8 +182,11 @@ std::vector<EntityDetection> CupheadEntityDetector::DetectEntities(
         const int cls_start = has_obj ? 5 : 4;
 
         for (int c = 0; c < nc; ++c) {
-            float s = obj * at_out_data(cls_start + c, i);
-            if (s > best_score) { best_score = s; best_id = c; }
+            float score = obj * at_out_data(cls_start + c, i);
+            if (score > best_score) {
+	            best_score = score;
+            	best_id = c;
+            }
         }
         if (best_score < conf_threshold) {
             continue;
@@ -178,11 +194,11 @@ std::vector<EntityDetection> CupheadEntityDetector::DetectEntities(
 
         cv::Rect box;
         if (!XywhToRectUnletterbox(cx, cy, w, h, gain, padw, padh,
-            bgr_frame.cols, bgr_frame.rows, box))
+            bgr_frame.cols, bgr_frame.rows, box)) {
             continue;
+        }
 
-        const EntityType type = (best_id == 0) ? EntityType::player : EntityType::boss;
-        detections.push_back({ .box = box, .type = type, .confidence = best_score });
+        detections.push_back({ .box = box, .type = IdToEntityType(best_id), .confidence = best_score });
     }
 
     NonMaximumSuppression(detections, iou_threshold);

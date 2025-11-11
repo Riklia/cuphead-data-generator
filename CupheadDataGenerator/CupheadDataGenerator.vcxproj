@@ -142,8 +142,8 @@
   <ItemGroup>
     <ClCompile Include="cuphead_data_generator.cpp" />
     <ClCompile Include="cuphead_entity_detector.cpp" />
-    <ClCompile Include="cuphead_frame.cpp" />
     <ClCompile Include="cuphead_hp_classifier.h" />
+    <ClCompile Include="ex_meter_detector.cpp" />
     <ClCompile Include="game_memory_reader.cpp" />
     <ClCompile Include="hit_flash_detector.cpp" />
     <ClCompile Include="win32_helpers.cpp" />
@@ -154,8 +154,8 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="cuphead_data_generator.h" />
     <ClInclude Include="cuphead_entity_detector.h" />
-    <ClInclude Include="cuphead_frame.h" />
-    <ClInclude Include="debug_utils.h" />
+    <ClInclude Include="ex_meter_detector.h" />
+    <ClInclude Include="frame_capture_worker.h" />
     <ClInclude Include="game_memory_reader.h" />
     <ClInclude Include="hit_flash_detector.h" />
     <ClInclude Include="win32_helpers.h" />

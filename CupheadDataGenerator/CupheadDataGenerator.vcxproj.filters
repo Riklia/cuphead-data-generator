@@ -30,9 +30,6 @@
     <ClCompile Include="cuphead_data_generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cuphead_frame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cuphead_hp_classifier.h">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -40,6 +37,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hit_flash_detector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ex_meter_detector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,16 +59,16 @@
     <ClInclude Include="cuphead_data_generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cuphead_frame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="debug_utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cuphead_entity_detector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hit_flash_detector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="frame_capture_worker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ex_meter_detector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

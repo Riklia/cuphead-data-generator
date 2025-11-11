@@ -2,8 +2,11 @@
 
 #include <memory>
 
+#include "constants.h"
 #include "cuphead_entity_detector.h"
 #include "cuphead_hp_classifier.h"
+#include "ex_meter_detector.h"
+#include "hit_flash_detector.h"
 #include "window_capture.h"
 
 // Provides an interface for receiving data from the game.
@@ -43,7 +46,9 @@ private:
 
     std::unique_ptr<WindowCapture> window_capture_;
     HpClassifier player_hp_classifier_{ "models/hp_tf.onnx", /*img_size=*/32 };
-    CupheadEntityDetector entity_detector_{ L"models/boss_player_bb_320.onnx", 320 };
+    CupheadEntityDetector entity_detector_{ L"models/entity_detector_640.onnx", /*input_size=*/384 };
+    ExMeterDetector ex_detector_{ constants::ex_badge };
+    HitFlashDetector hit_detector_;
 
     SmoothedFpsTracker fps_tracker_;
 
