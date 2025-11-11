@@ -13,7 +13,9 @@ cv::Rect ClampRect(const cv::Rect& rect, const cv::Size& s) {
 
 
 int ExMeterDetector::FindExValue(const cv::Mat& frame_bgr, cv::Mat* visual_dbg) {
-    if (frame_bgr.empty() || ex_rect_.empty()) return 0;
+    if (frame_bgr.empty() || ex_rect_.empty()) {
+        return 0;
+    }
 
     cv::Mat roi = frame_bgr(ex_rect_);
     cv::Mat hsv;
